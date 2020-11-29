@@ -1,0 +1,28 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /api
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  profiles:
+    active: prod
+  application:
+    name: Project Management
+
+#database custom params
+custom:
+  database:
+    class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:5432/postgres?currentSchema=management
+    username: postgres
+    password: postgres
+
+#JWT custom params
+security:
+  jwt:
+    token:
+      secret-key: secret-key-for-encryption
+      expiration: 7200000
