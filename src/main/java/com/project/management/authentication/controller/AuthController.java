@@ -48,7 +48,7 @@ public class AuthController {
 
         Optional<String> token;
 
-        Optional<User> user = userService.findByUserName(loginRequest.getUserName());
+        Optional<User> user = Optional.ofNullable(userService.findByUserName(loginRequest.getUserName()));
         if (user.isPresent()) {
             try {
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
@@ -68,7 +68,8 @@ public class AuthController {
 
     @PostMapping(value = "/signup", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity singUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-        Optional<User> user = userService.findByUserName(signUpRequest.getUserName());
+
+        Optional<User> user = Optional.ofNullable(userService.findByUserName(signUpRequest.getUserName()));
 
         if (user.isEmpty()) {
             try {

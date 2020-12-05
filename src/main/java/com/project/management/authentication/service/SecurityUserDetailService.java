@@ -23,10 +23,9 @@ public class SecurityUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
-        Optional<User> user = Optional.ofNullable(userService.findByUserName(userName).orElseThrow(() ->
-                new UsernameNotFoundException("User name : " + userName + " not found")));
+        User user = userService.findByUserName(userName);
 
-        return new UserPrincipal(user.get());
+        return new UserPrincipal(user);
 
     }
 
@@ -34,6 +33,7 @@ public class SecurityUserDetailService implements UserDetailsService {
      * Taking token as parameter and parse it. And validate that user exist.
      * Note: We could pass username and roles directly to UserPrincipal
      * Note: It's more efficient way to implement
+     *
      * @param token
      * @return
      */
