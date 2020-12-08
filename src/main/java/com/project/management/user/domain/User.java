@@ -5,8 +5,8 @@ import com.project.management.role.domain.Role;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -17,24 +17,22 @@ import java.util.Set;
 @Table(name = "USERS")
 public class User extends BaseEntity {
 
-    @NotNull(message = "User Name may not be null")
-    @NotBlank
+    @NotEmpty(message = "User name is mandatory.")
+    @Size(min = 5, max = 10, message = "User name should have min 5 max 10 characters.")
     private String userName;
 
-    @NotNull
-    @NotBlank
+    @NotEmpty(message = "Full name is mandatory.")
+    @Size(min = 5, max = 20, message = "Full name should have min 5 max 20 characters.")
     private String fullName;
 
-    @NotNull
-    @NotBlank
+    @NotEmpty(message = "Password name is mandatory.")
     private String password;
 
-    @NotNull
-    @NotBlank
+    @NotEmpty(message = "Email name is mandatory.")
     private String email;
 
     @Singular
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "roles_users",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},

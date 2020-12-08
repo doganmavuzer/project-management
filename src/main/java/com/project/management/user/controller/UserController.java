@@ -29,14 +29,14 @@ public class UserController {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserVm createUser(@Valid @RequestBody UserCreateVm createVm) {
+    public UserVm createUser(@Valid @RequestBody UserCreateVm user) {
 
-        User user = User.builder().userName(createVm.getUserName())
-                .email(createVm.getEmail())
-                .fullName(createVm.getFullName())
-                .password(passwordEncoder.encode(createVm.getPassword())).role(Role.builder().roleName("ROLE_USER").build()).build();
+        User createdUser = User.builder().userName(user.getUserName())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .password(passwordEncoder.encode(user.getPassword())).role(Role.builder().roleName("ROLE_USER").build()).build();
 
-        return new UserVm(userService.save(user));
+        return new UserVm(userService.save(createdUser));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,8 +52,8 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User findById(@PathVariable(value = "id") String id) {
-        return userService.findById(UUID.fromString(id));
+    public UserVm findById(@PathVariable(value = "id") String id) {
+        return new UserVm(userService.findById(UUID.fromString(id)));
     }
 
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

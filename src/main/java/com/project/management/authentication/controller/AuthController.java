@@ -6,6 +6,7 @@ import com.project.management.authentication.jwt.JwtTokenProvider;
 import com.project.management.authentication.provider.AuthManager;
 import com.project.management.authentication.provider.PassEncoder;
 import com.project.management.role.domain.Role;
+import com.project.management.role.dto.RoleVm;
 import com.project.management.user.domain.User;
 import com.project.management.user.dto.UserVm;
 import com.project.management.user.service.UserService;
@@ -19,12 +20,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -59,7 +64,7 @@ public class AuthController {
                 model.put("token", token);
                 return ResponseEntity.ok(model);
             } catch (AuthenticationException e) {
-                log.error("Invalid user name or password",e);
+                log.error("Invalid user name or password", e);
             }
 
         }
@@ -77,9 +82,9 @@ public class AuthController {
                         .fullName(signUpRequest.getFullName())
                         .password(passwordEncoder.encode(signUpRequest.getPassword()))
                         .email(signUpRequest.getEmail()).role(Role.builder().roleName("ROLE_USER").build()).build());
-                return ResponseEntity.ok(UserVm.builder().userName(signUpUser.getUserName()).email(signUpUser.getEmail()).fullName(signUpUser.getFullName()).roles(signUpUser.getRoles()).build());
+                return ResponseEntity.ok(UserVm.builder().userName(signUpUser.getUserName()).email(signUpUser.getEmail()).fullName(signUpUser.getFullName()).roles(signUpUser.getRoles().stream().map(RoleVm::new).collect(Collectors.toSet())).build());
             } catch (Exception e) {
-                log.error("User could not save to database",e);
+                log.error("User could not save to database", e);
             }
         } else {
             return new ResponseEntity("User already exist.", HttpStatus.BAD_REQUEST);
